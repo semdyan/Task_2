@@ -24,7 +24,7 @@ class TestLoginUser:
 
     @allure.title('Проверка что нельзя авторизоваться без обязательных полей')
     @pytest.mark.parametrize('missing_field', ['email', 'password'])
-    def test_login_user_successful(self, create_and_return_user, missing_field):
+    def test_login_user_missing_field_error(self, create_and_return_user, missing_field):
         url = f'{Urls.BASE_URL}{Urls.LOGIN_USER_URL}'
         payload = create_and_return_user[0]
         payload.pop('name')
@@ -35,7 +35,7 @@ class TestLoginUser:
 
     @allure.title('Проверка что нельзя авторизоваться с некорректными данными')
     @pytest.mark.parametrize('incorrect_field', ['email', 'password'])
-    def test_login_user_successful(self, create_and_return_user, incorrect_field):
+    def test_login_incorrect_field_error(self, create_and_return_user, incorrect_field):
         url = f'{Urls.BASE_URL}{Urls.LOGIN_USER_URL}'
         payload = create_and_return_user[0]
         payload.pop('name')
