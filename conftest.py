@@ -4,6 +4,7 @@ import pytest
 from methods.create_user_methods import CreateUser
 from methods.login_user_methods import LoginUser
 from methods.order_methods import Order
+from methods.delete_user_methods import DeleteUser
 
 @pytest.fixture(scope='function')
 def generate_payload():
@@ -21,12 +22,20 @@ def generate_payload():
 def create_and_return_user(generate_payload):
     payload = generate_payload
     CreateUser.post_create_user(payload)
+    yield payload
+    token = LoginUser.post_login_user(payload).json().get('accessToken')
+    DeleteUser.delete_user(token)
+
+@pytest.fixture(scope='function')
+def create_payload_for_login(create_and_return_user):
+    payload = create_and_return_user
+    payload.pop('name')
     return payload
 
 @pytest.fixture(scope='function')
 def login_and_return_access_token(create_and_return_user):
     payload = create_and_return_user
-    token = LoginUser.post_login_user(payload).json()['accessToken']
+    token = LoginUser.post_login_user(payload).json().get('accessToken')
     return token
 
 @pytest.fixture(scope='function')
