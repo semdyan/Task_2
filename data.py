@@ -3,6 +3,6 @@ class Urls:
     CREATE_USER_URL = '/api/auth/register'
     LOGIN_USER_URL = '/api/auth/login'
     USER_DATA_URL = '/api/auth/user'
-    CREATE_ORDER_URL = '/api/orders'
+    ORDERS_URL = '/api/orders'
     INGREDIENTS_DATA_URL = '/api/ingredients'
 

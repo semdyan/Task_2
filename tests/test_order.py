@@ -40,3 +40,23 @@ class TestCreateOrder:
         response = Order().post_create_order(payload=ingredient_list)
         assert response.status_code == 500, 'Вернулся некорректный ответ'
 
+class TestGetOrders:
+    @allure.title('Проверка успешного получения заказов пользователя c авторизацией')
+    def test_get_orders_with_token_success(self, login_and_return_access_token, generate_random_ingredients_list):
+        ingredients_list = generate_random_ingredients_list
+        token = login_and_return_access_token
+        Order().post_create_order(token=token, payload=ingredients_list)
+        response = Order().get_user_orders(token=token)
+        expected_ingredients_list = ingredients_list.get('ingredients')
+        actual_ingredients_list = response.json().get('orders')[0].get('ingredients')
+        assert (response.status_code == 200 and response.json().get('success')
+                and actual_ingredients_list == expected_ingredients_list), 'Вернулся некорректный ответ'
+
+    @allure.title('Проверка ошибки при попытке получить заказы пользователя без авторизации')
+    def test_get_orders_no_token_error(self, login_and_return_access_token, generate_random_ingredients_list):
+        ingredients_list = generate_random_ingredients_list
+        token = login_and_return_access_token
+        Order().post_create_order(token=token, payload=ingredients_list)
+        response = Order().get_user_orders()
+        assert (response.status_code == 401 and not response.json().get('success')
+                and response.json().get('message') == 'You should be authorised'), 'Вернулся некорректный ответ'
