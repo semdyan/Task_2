@@ -7,7 +7,7 @@ class TestCreateOrder:
     @allure.title('Проверка успешного создания заказа с полным списком ингредиентов')
     def test_create_order_full_ingredients_list_success(self, login_and_return_access_token,
                                                         generate_random_ingredients_list):
-        token = login_and_return_access_token
+        token = login_and_return_access_token[0]
         ingredient_list = generate_random_ingredients_list
         response = Order().post_create_order(token=token, payload=ingredient_list)
         assert response.status_code == 200 and response.json().get('success'), 'Вернулся некорректный ответ'
@@ -44,7 +44,7 @@ class TestGetOrders:
     @allure.title('Проверка успешного получения заказов пользователя c авторизацией')
     def test_get_orders_with_token_success(self, login_and_return_access_token, generate_random_ingredients_list):
         ingredients_list = generate_random_ingredients_list
-        token = login_and_return_access_token
+        token = login_and_return_access_token[0]
         Order().post_create_order(token=token, payload=ingredients_list)
         response = Order().get_user_orders(token=token)
         expected_ingredients_list = ingredients_list.get('ingredients')
@@ -55,7 +55,7 @@ class TestGetOrders:
     @allure.title('Проверка ошибки при попытке получить заказы пользователя без авторизации')
     def test_get_orders_no_token_error(self, login_and_return_access_token, generate_random_ingredients_list):
         ingredients_list = generate_random_ingredients_list
-        token = login_and_return_access_token
+        token = login_and_return_access_token[0]
         Order().post_create_order(token=token, payload=ingredients_list)
         response = Order().get_user_orders()
         assert (response.status_code == 401 and not response.json().get('success')

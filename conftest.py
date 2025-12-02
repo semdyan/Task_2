@@ -23,8 +23,7 @@ def create_and_return_user(generate_payload):
     payload = generate_payload
     CreateUser.post_create_user(payload)
     yield payload
-    token = LoginUser.post_login_user(payload).json().get('accessToken')
-    DeleteUser.delete_user(token)
+    DeleteUser.login_and_delete_user(payload)
 
 @pytest.fixture(scope='function')
 def create_payload_for_login(create_and_return_user):
@@ -36,7 +35,7 @@ def create_payload_for_login(create_and_return_user):
 def login_and_return_access_token(create_and_return_user):
     payload = create_and_return_user
     token = LoginUser.post_login_user(payload).json().get('accessToken')
-    return token
+    return token, payload
 
 @pytest.fixture(scope='function')
 def generate_random_ingredients_list():
