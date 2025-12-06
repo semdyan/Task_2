@@ -10,14 +10,12 @@ class TestCreateUser:
         payload = generate_payload
         result = CreateUser.post_create_user(payload)
         assert result.status_code == 200 and result.json().get('success'), 'Вернулся некорректный ответ'
-        DeleteUser.login_and_delete_user(payload)
 
     @allure.title('Проверка что возвращаются токены')
     def test_create_user_are_tokens_in_response(self, generate_payload):
         payload = generate_payload
         result = CreateUser.post_create_user(payload)
         assert result.json().get('accessToken') and result.json().get('refreshToken'), 'Не вернулись токены'
-        DeleteUser.login_and_delete_user(payload)
 
     @allure.title('Проверка что нельзя зарегистрировать существующего пользователя')
     def test_create_user_existing_user_error(self, create_and_return_user):
