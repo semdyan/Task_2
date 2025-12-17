@@ -18,8 +18,8 @@ class TestChangeUserData:
 
     @allure.title('Проверка, что нельзя поменять данные пользователя без токена')
     @pytest.mark.parametrize('field_to_change', ['email', 'name'])
-    def test_change_user_data_invalid_token_error(self, create_and_return_user, field_to_change):
-        payload = create_and_return_user
+    def test_change_user_data_invalid_token_error(self, create_user_and_return_payload, field_to_change):
+        payload = create_user_and_return_payload
         payload[field_to_change] += str(random.randint(0, 1000000))
         result = UserData.patch_change_user_data(headers=None, payload=payload)
         assert result.status_code == 401, 'Вернулся некорректный код ответа'

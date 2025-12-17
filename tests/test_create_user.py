@@ -6,18 +6,17 @@ from data import ResponseMessages
 
 class TestCreateUser:
     @allure.title('Проверка что пользователь создается')
-    def test_create_user_success(self, generate_payload):
-        payload = generate_payload
-        result = CreateUser.post_create_user(payload)
-        assert result.status_code == 200, 'Вернулся некорректный код ответа'
-        assert result.json().get('success'), 'Вернулось некорректное значение success'
-        assert result.json().get('accessToken'), 'Не вернулся accessToken'
-        assert result.json().get('refreshToken'), 'Не вернулся refreshToken'
+    def test_create_user_success(self, create_user_and_return_response):
+        response = create_user_and_return_response
+        assert response.status_code == 200, 'Вернулся некорректный код ответа'
+        assert response.json().get('success'), 'Вернулось некорректное значение success'
+        assert response.json().get('accessToken'), 'Не вернулся accessToken'
+        assert response.json().get('refreshToken'), 'Не вернулся refreshToken'
 
 
     @allure.title('Проверка что нельзя зарегистрировать существующего пользователя')
-    def test_create_user_existing_user_error(self, create_and_return_user):
-        payload = create_and_return_user
+    def test_create_user_existing_user_error(self, create_user_and_return_payload):
+        payload = create_user_and_return_payload
         result = CreateUser.post_create_user(payload)
         assert result.status_code == 403, 'Вернулся некорректный код ответа'
         assert not result.json().get('success'), 'Вернулось некорректное значение success'

@@ -19,21 +19,27 @@ def generate_payload():
     return payload
 
 @pytest.fixture(scope='function')
-def create_and_return_user(generate_payload):
+def create_user_and_return_response(generate_payload):
+    payload = generate_payload
+    yield CreateUser.post_create_user(payload)
+    DeleteUser.login_and_delete_user(payload)
+
+@pytest.fixture(scope='function')
+def create_user_and_return_payload(generate_payload):
     payload = generate_payload
     CreateUser.post_create_user(payload)
     yield payload
     DeleteUser.login_and_delete_user(payload)
 
 @pytest.fixture(scope='function')
-def create_payload_for_login(create_and_return_user):
-    payload = create_and_return_user
+def create_payload_for_login(create_user_and_return_payload):
+    payload = create_user_and_return_payload
     payload.pop('name')
     return payload
 
 @pytest.fixture(scope='function')
-def login_and_return_access_token(create_and_return_user):
-    payload = create_and_return_user
+def login_and_return_access_token(create_user_and_return_payload):
+    payload = create_user_and_return_payload
     token = LoginUser.post_login_user(payload).json().get('accessToken')
     return token, payload
 
